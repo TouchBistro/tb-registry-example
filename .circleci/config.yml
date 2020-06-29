@@ -1,0 +1,32 @@
+version: 2.1
+
+jobs:
+  validate:
+    docker:
+      - image: circleci/golang:1.13
+    working_directory: ~/tb-registry-example
+    steps:
+      - checkout
+      - run:
+          name: Clone tb repo
+          command: git clone git@github.com:TouchBistro/tb.git ~/tb
+      - restore_cache:
+          name: Restore dependency cache
+          keys:
+            - tb-deps-{{ checksum "~/tb/go.sum" }}
+      - run:
+          name: Build and install tb
+          command: 'cd ~/tb && go install && echo "debug: true" >> ~/.tbrc.yml'
+      - save_cache:
+          name: Cache dependencies
+          key: tb-deps-{{ checksum "~/tb/go.sum" }}
+          paths:
+            - /go/pkg
+      - run:
+          name: Validate configs
+          command: tb registry validate .
+
+workflows:
+  validate:
+    jobs:
+      - validate
