@@ -1,0 +1,21 @@
+services:
+  postgres:
+    envVars:
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: local
+    mode: remote
+    ports:
+      - '5432:5432'
+    remote:
+      image: postgres
+      tag: 12.3-alpine
+      volumes:
+        - value: postgres-example:/var/lib/postgresql/data
+          named: true
+  redis:
+    mode: remote
+    ports:
+      - '6379:6379'
+    remote:
+      image: redis
+      tag: 6.0-alpine

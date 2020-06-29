@@ -1,0 +1,4 @@
+db:
+  services:
+    - postgres
+    - redis
